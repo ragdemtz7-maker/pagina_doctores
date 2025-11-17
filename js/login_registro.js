@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Configuración de Cognito
     const poolData = {
-        UserPoolId: 'us-east-1_lomR014UE',  // Reemplaza con tu UserPoolId
-        ClientId: '2p69kk7ggfu7lutsonsffc86af' // Reemplaza con tu App Client ID
+        UserPoolId: 'us-east-2_3d9dAMKXZ',  // Reemplaza con tu UserPoolId
+        ClientId: '1vd7m5lcdd8r9nr5clfga3rctb' // Reemplaza con tu App Client ID
     };
 
     const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
