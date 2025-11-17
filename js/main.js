@@ -1,1 +1,16 @@
-"use strict";!function(){var n=$("html"),t=function(){$(".btn-menu").on("click",function(t){t.preventDefault(),n.toggleClass("menu-opened")})},e=function(){t()};e()}();
+<script>
+  const doctorSelect = document.getElementById("doctorSelect");
+  const especialidadSelect = document.getElementById("especialidadSelect");
+
+  doctorSelect.addEventListener("change", function () {
+    const selectedDoctor = doctorSelect.value;
+    const especialidad = doctorEspecialidadMap[selectedDoctor] || "";
+    especialidadSelect.value = especialidad;
+  });
+
+  especialidadSelect.addEventListener("change", function () {
+    const selectedEspecialidad = especialidadSelect.value;
+    const doctor = especialidadDoctorMap[selectedEspecialidad] || "";
+    doctorSelect.value = doctor;
+  });
+</script>
