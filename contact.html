@@ -76,8 +76,8 @@
                <div class="custom_menu">
                   <ul>
                      <li class="active"><a href="index.html">Home</a></li>
-                     <li><a href="treatment.html">Treatment</a></li>
-                     <li><a href="contact.html">Contact Us</a></li>
+                     <li><a href="treatment.html">Especialidades</a></li>
+                     <li><a href="contact.html">Contacto</a></li>
                   </ul>
                </div>
                <form class="form-inline my-2 my-lg-0">
@@ -104,9 +104,25 @@
                            <input type="text" class="mail_text" placeholder="Teléfono" name="Phone Number"> 
                            <input type="text" class="mail_text" placeholder="Email" name="Email">
                            <textarea class="massage-bt" placeholder="Mensaje" rows="5" id="comment" name="Mensaje"></textarea>
-                           <div class="send_bt"><a href="#">Enviar</a></div>
+                           <div class="send_bt"><button type="submit">Enviar</a></div>
                         </div>
                      </form>
+                     <script>
+                        document.getElementById("contactForm").addEventListener("submit", async function (e) {
+                           e.preventDefault();
+                           const formData = new FormData(this);
+                           const data = Object.fromEntries(formData.entries());
+
+                           const response = await fetch("https://TU_ENDPOINT_API_GATEWAY", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify(data)
+                           });
+
+                           const result = await response.text();
+                           alert(result);
+                        });
+                     </script>
                   </div>
                   <div class="col-md-6 padding_left_15">
                      <div class="map_main">
@@ -186,4 +202,5 @@
          });
       </script>
    </body>
+
 </html>
