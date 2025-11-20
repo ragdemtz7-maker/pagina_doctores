@@ -1,3 +1,4 @@
+# backend/usuario/models.py
 from pydantic import BaseModel, EmailStr
 
 class PersonaBase(BaseModel):

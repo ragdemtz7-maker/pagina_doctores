@@ -1,0 +1,20 @@
+# Ignorar entornos virtuales
+venv/
+*/venv/
+backend/venv/
+
+# Ignorar cachés de Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Ignorar archivos temporales
+*.log
+*.sqlite3
+*.db
+
+# Ignorar paquetes de despliegue
+*.zip
+
+# Ignorar configuraciones locales
+.env
