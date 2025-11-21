@@ -1014,7 +1014,7 @@ p.doctorname_text {
     margin-bottom: 40px;
 }
 
-input.mail_text::placeholder {
+input.form_input::placeholder {
     color: #c5c8c7;
 }
 
@@ -1296,4 +1296,5 @@ input.mail_bt::placeholder {
     margin: 90px 0px;
 
 }
+
 
