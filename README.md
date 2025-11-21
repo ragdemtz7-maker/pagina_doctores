@@ -8,7 +8,7 @@ Amazon Cognito\
 Amazon RDS (MySQL)\
 Internet Gateway y tabla de enrutamiento\
 Lambda\
-SES
+
 
 ## Costo
 Todos los servicios son elegibles para Free Tier.
