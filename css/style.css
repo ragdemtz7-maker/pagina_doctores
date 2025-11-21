@@ -1007,7 +1007,7 @@ p.doctorname_text {
     width: 100%;
     float: left;
     font-size: 16px;
-    color: #c5c8c7;
+    color: #393838;
     border: 1px solid #cfcfcf;
     background-color: transparent;
     padding: 8px 15px;
@@ -1015,7 +1015,7 @@ p.doctorname_text {
 }
 
 input.form_input::placeholder {
-    color: #c5c8c7;
+    color: #393838;
 }
 
 /*.form_input {
@@ -1030,7 +1030,8 @@ input.form_input::placeholder {
 }*/
 
 textarea#comment.massage-bt::placeholder {
-    color: #c5c8c7;
+    /*color: #c5c8c7;*/
+    color: #393838
 }
 
 .send_bt {
@@ -1296,5 +1297,6 @@ input.mail_bt::placeholder {
     margin: 90px 0px;
 
 }
+
 
 
