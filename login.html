@@ -107,23 +107,6 @@
       </div>
       <!-- about section end -->
       <!-- Javascript files-->
-      <script>
-      // Login
-      async function login() {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      try {
-        const user = await Amplify.Auth.signIn(email, password);
-        document.getElementById("login").style.display = "none";
-        document.getElementById("registro").style.display = "none";
-        document.getElementById("confirmacion").style.display = "none";
-        document.getElementById("panel").style.display = "block";
-        document.getElementById("usuario").innerText = "Usuario: " + user.username;
-      } catch (err) {
-        alert("Error en login: " + err.message);
-      }
-      }
-      </script>
       <script src="js/jquery.min.js"></script>
       <script src="js/popper.min.js"></script>
       <script src="js/bootstrap.bundle.min.js"></script>
@@ -152,6 +135,7 @@
    </body>
 
 </html>
+
 
 
 
