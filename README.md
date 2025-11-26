@@ -7,7 +7,7 @@ Amplify\
 Amazon Cognito\
 Amazon RDS (MySQL)\
 Internet Gateway y tabla de enrutamiento\
-Lambda\
+Lambda
 
 
 ## Costo
