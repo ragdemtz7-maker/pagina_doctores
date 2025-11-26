@@ -85,7 +85,6 @@
                   <div class="search_btn">
                      <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i><span class="signup_text">Login</span></a></li>
                      <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i><span class="signup_text">Registrate</span></a></li>
-                     <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
                   </div>
                </form>
             </div>
@@ -97,20 +96,11 @@
         <div class="login-container">
             <h2 class="text-center mb-4" id="form-title">Inicio de Sesión</h2>
             <!-- Formulario de Login -->
-            <form id="login-form" class="d-none">
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="loginEmail" placeholder="Email" required>
-                </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" id="loginPassword" placeholder="Contraseña" required>
-                </div>
-                <div class="d-grid gap-2">
-                    <button onclick="login()" class="btn btn-primary">Iniciar Sesión</button>
-                </div>
-                <p class="text-center mt-3 mb-0">
-                    ¿No tienes cuenta? <a href="registro.html" id="show-signup-form" class="small-link">Regístrate aquí</a>
-                </p>
-            </form>
+            <div id="login">
+             <input type="text" id="loginEmail" placeholder="Email"><br>
+             <input type="password" id="loginPassword" placeholder="Password"><br>
+             <button onclick="login()">Iniciar Sesión</button>
+            </div>
         </div>  
       </div>
       <!-- about section end -->
@@ -168,4 +158,5 @@
    </body>
 
 </html>
+
 
