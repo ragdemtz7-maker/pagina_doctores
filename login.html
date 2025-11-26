@@ -9,7 +9,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1">
       <!-- site metas -->
-      <title>About</title>
+      <title>Iniciar Sesión</title>
       <meta name="keywords" content="">
       <meta name="description" content="">
       <meta name="author" content="">
@@ -32,6 +32,7 @@
       <link rel="stylesheet" href="css/owl.theme.default.min.css">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
       <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+      <script src="https://unpkg.com/aws-amplify@latest/dist/aws-amplify.min.js"></script>
    </head>
    <body>
       <!-- header top section start -->
@@ -40,8 +41,8 @@
             <div class="row">
                <div class="col-sm-12">
                   <div class="header_top_main">
-                     <div class="call_text"><a href="#"><span class="padding_right0"><i class="fa fa-phone" aria-hidden="true"></i></span>  Call : +01 1234567890</a></div>
-                     <div class="call_text_2"><a href="#"><span class="padding_right0"><i class="fa fa-envelope" aria-hidden="true"></i></span> demo@gmail.com</a></div>
+                     <div class="call_text"><a href="#"><span class="padding_right0"><i class="fa fa-phone" aria-hidden="true"></i></span>  Tel : +01 1234567890</a></div>
+                     <div class="call_text_2"><a href="#"><span class="padding_right0"><i class="fa fa-envelope" aria-hidden="true"></i></span> torremedicastamonica@gmail.com</a></div>
                   </div>
                </div>
             </div>
@@ -83,7 +84,7 @@
                <form class="form-inline my-2 my-lg-0">
                   <div class="search_btn">
                      <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i><span class="signup_text">Login</span></a></li>
-                     <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i><span class="signup_text">Sign Up</span></a></li>
+                     <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i><span class="signup_text">Registrate</span></a></li>
                      <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
                   </div>
                </form>
@@ -94,117 +95,51 @@
       <!-- about section start -->
       <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="login-container">
-            <h2 class="text-center mb-4" id="form-title">Registro de Paciente</h2>
-
-            <!-- Formulario de Registro (Signup) -->
-            <form id="signup-form" class="d-block">
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="name" placeholder="Nombre completo" required>
-                </div>
-                <div class="mb-3">
-                    <input type="email" class="form-control" id="email" placeholder="Email" required>
-                </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" id="password" placeholder="Contraseña" required>
-                </div>
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">Registrarse</button>
-                </div>
-                <p class="text-center mt-3 mb-0">
-                    ¿Ya tienes cuenta? <a href="#" id="show-login-form" class="small-link">Iniciar sesión</a>
-                </p>
-            </form>
-
+            <h2 class="text-center mb-4" id="form-title">Inicio de Sesión</h2>
             <!-- Formulario de Login -->
             <form id="login-form" class="d-none">
                 <div class="mb-3">
-                    <input type="text" class="form-control" id="login-username" placeholder="Usuario o Email" required>
+                    <input type="text" class="form-control" id="loginEmail" placeholder="Email" required>
                 </div>
                 <div class="mb-3">
-                    <input type="password" class="form-control" id="login-password" placeholder="Contraseña" required>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Contraseña" required>
                 </div>
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                    <button onclick="login()" class="btn btn-primary">Iniciar Sesión</button>
                 </div>
                 <p class="text-center mt-3 mb-0">
-                    ¿No tienes cuenta? <a href="#" id="show-signup-form" class="small-link">Regístrate aquí</a>
-                </p>
-                <p class="text-center mt-2 mb-0">
-                    <a href="#" id="forgot-password-link" class="small-link">¿Olvidaste tu contraseña?</a>
+                    ¿No tienes cuenta? <a href="registro.html" id="show-signup-form" class="small-link">Regístrate aquí</a>
                 </p>
             </form>
-
-            <!-- Formulario de Confirmación -->
-            <form id="confirm-form" class="d-none">
-                <div class="mb-3">
-                    <label for="code" class="form-label">Código de Confirmación</label>
-                    <input type="text" class="form-control" id="code" placeholder="Ingresa el código de tu email" required>
-                </div>
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">Confirmar cuenta</button>
-                </div>
-                <p class="text-center mt-3 mb-0">
-                    <a href="#" id="resend-code-link" class="small-link">Reenviar código</a>
-                </p>
-            </form>
-
-            <!-- Formulario para Completar Datos del Paciente -->
-            <form id="complete-form" class="d-none">
-                <h4 class="text-center mb-4">Completa tus datos</h4>
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="apellido" placeholder="Apellido" required>
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="documento" placeholder="Documento de Identidad" required>
-                </div>
-                <div class="mb-3">
-                    <label for="fecha_nacimiento" class="form-label text-start w-100">Fecha de Nacimiento</label>
-                    <input type="date" class="form-control" id="fecha_nacimiento" required>
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="telefono" placeholder="Teléfono">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="direccion" placeholder="Dirección">
-                </div>
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">Guardar y continuar</button>
-                </div>
-            </form>
-
-            <!-- Mensaje de Bienvenida -->
-            <div id="bienvenida" class="d-none text-center">
-                <h2 class="text-success mb-3">¡Bienvenido/a al portal!</h2>
-                <p>Tu cuenta ha sido creada y tus datos guardados.</p>
-                <p>¡Ahora puedes reservar tus citas!</p>
-                <div class="d-grid gap-2 mt-4">
-                     <a href="reservar_citas.html" class="btn btn-primary">Ir al Calendario de Citas</a>
-                </div>
-            </div>
-
-            <!-- Modal para mensajes (reemplaza alert()) -->
-            <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="messageModalLabel">Mensaje</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body" id="messageModalBody">
-                            <!-- Contenido del mensaje aquí -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-         </div>
+        </div>  
+      </div>
       <!-- about section end -->
       <!-- Javascript files-->
+      <script>
+      // Configuración Amplify con tu pool de Cognito
+      Amplify.configure({
+      Auth: {
+        region: "us-east-2", // ajusta a tu región
+        userPoolId: "us-east-2_3d9dAMKXZ", // tu User Pool ID
+        userPoolWebClientId: "1vd7m5lcdd8r9nr5clfga3rctb", // tu App Client ID
+        }
+      });
+      // Login
+      async function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      try {
+        const user = await Amplify.Auth.signIn(email, password);
+        document.getElementById("login").style.display = "none";
+        document.getElementById("registro").style.display = "none";
+        document.getElementById("confirmacion").style.display = "none";
+        document.getElementById("panel").style.display = "block";
+        document.getElementById("usuario").innerText = "Usuario: " + user.username;
+      } catch (err) {
+        alert("Error en login: " + err.message);
+      }
+      }
+      </script>
       <script src="js/jquery.min.js"></script>
       <script src="js/popper.min.js"></script>
       <script src="js/bootstrap.bundle.min.js"></script>
@@ -233,3 +168,4 @@
    </body>
 
 </html>
+
