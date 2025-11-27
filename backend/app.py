@@ -1,83 +1,75 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from mangum import Mangum
 
 from backend.paciente import guardar_paciente
-from backend.sesion import (get_disponibilidad_medico_mes, get_medicos,
-                            get_nombre_completo_usuario)
+from backend.sesion import (
+    get_disponibilidad_medico_mes,
+    get_medicos,
+    get_nombre_completo_usuario,
+)
 
-#from backend.programacion import (
-#    crear_programacion,
-#    listar_programaciones,
-#    actualizar_programacion,
-#    eliminar_programacion
-#)
+app = FastAPI(
+    title="API Citas Médicas",
+    description="CRUD modularizado por entidad con ejemplos JSON listos para probar",
+    version="1.0.0",
+)
 
-app = Flask(__name__)
+# Configuración de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# CORS config
-CORS(app, resources={r"/api/*": {
-    "origins": "*",
-    "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type"]
-}})
-
-@app.route("/")
+@app.get("/")
 def home():
-    return "Backend de Citas Médicas funcionando"
+    return {"message": "Backend de Citas Médicas funcionando"}
 
-# ------------------- PACIENTES -------------------
-@app.route('/api/guardar_paciente', methods=['POST'])
-def api_guardar_paciente():
-    data = request.json or {}
+@app.post("/api/guardar_paciente")
+async def api_guardar_paciente(request: Request):
+    data = await request.json()
     resultado = guardar_paciente(data)
     if resultado.get("status") == "error":
-        return jsonify(resultado), 500 
-    return jsonify(resultado)
+        return JSONResponse(content=resultado, status_code=500)
+    return JSONResponse(content=resultado)
 
-# ------------------- USUARIOS -------------------
-@app.route('/api/nombre_usuario/<int:id_persona>', methods=['GET'])
-def api_nombre_usuario(id_persona):
+@app.get("/api/nombre_usuario/{id_persona}")
+def api_nombre_usuario(id_persona: int):
     nombre = get_nombre_completo_usuario(id_persona)
     if nombre:
-        return jsonify({"nombre_completo": nombre})
-    else:
-        return jsonify({"error": "Usuario no encontrado"}), 404
+        return {"nombre_completo": nombre}
+    return JSONResponse(content={"error": "Usuario no encontrado"}, status_code=404)
 
-# ------------------- MÉDICOS -------------------
-@app.route('/api/medicos', methods=['GET'])
+@app.get("/api/medicos")
 def api_get_medicos():
     medicos = get_medicos()
     if medicos:
-        return jsonify(medicos)
-    else:
-        return jsonify({"message": "No se encontraron médicos"}), 404
+        return medicos
+    return JSONResponse(content={"message": "No se encontraron médicos"}, status_code=404)
 
-@app.route('/api/medicos/<int:id_medico>/disponibilidad', methods=['GET'])
-def api_get_disponibilidad_medico(id_medico):
+@app.get("/api/medicos/{id_medico}/disponibilidad")
+def api_get_disponibilidad_medico(id_medico: int):
     disponibilidad = get_disponibilidad_medico_mes(id_medico)
     if disponibilidad:
-        return jsonify(disponibilidad)
-    else:
-        return jsonify({"message": "No se pudo obtener la disponibilidad para este médico."}), 404
+        return disponibilidad
+    return JSONResponse(
+        content={"message": "No se pudo obtener la disponibilidad para este médico."},
+        status_code=404,
+    )
 
-# ------------------- PROGRAMACIONES -------------------
-#@app.route('/api/programaciones', methods=['POST'])
-#def api_crear_programacion():
-#    return crear_programacion()
+# Handler para Lambda
+handler = Mangum(app)
 
-#@app.route('/api/programaciones', methods=['GET'])
-#def api_listar_programaciones():
-#    return listar_programaciones()
-
-#@app.route('/api/programaciones/<int:id_programacion>', methods=['PUT'])
-#def api_actualizar_programacion(id_programacion):
-#    return actualizar_programacion(id_programacion)
-
-#@app.route('/api/programaciones/<int:id_programacion>', methods=['DELETE'])
-#def api_eliminar_programacion(id_programacion):
-#    return eliminar_programacion(id_programacion)
-
-
-# ------------------- MAIN -------------------
+# Bloque para ejecución local con python -m
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001)
+    import asyncio
+    from hypercorn.asyncio import serve
+    from hypercorn.config import Config
+
+    config = Config()
+    config.bind = ["0.0.0.0:5001"]
+
+    asyncio.run(serve(app, config))
