@@ -14,6 +14,7 @@ app = FastAPI(
     title="API Citas Médicas",
     description="CRUD modularizado por entidad con ejemplos JSON listos para probar",
     version="1.0.0",
+    root_path="/prod"
 )
 
 # Configuración de CORS

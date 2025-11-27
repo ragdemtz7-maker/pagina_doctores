@@ -1,38 +1,54 @@
 from fastapi import HTTPException
-from jose import jwt
-import requests
+import boto3
 
-COGNITO_POOL_URL = "https://cognito-idp.us-east-2.amazonaws.com/us-east-2_sbXYObV2q"
 COGNITO_CLIENT_ID = "5eiror37ph4chhlm1a85sqk0cg"
+COGNITO_REGION = "us-east-2"
 
-def verify_token(token: str):
+client = boto3.client("cognito-idp", region_name=COGNITO_REGION)
+
+def login_user(username: str, password: str, new_password: str = None):
+    """
+    Inicia sesión en Cognito. Si el usuario tiene contraseña temporal,
+    Cognito devuelve el challenge NEW_PASSWORD_REQUIRED y se responde con la nueva contraseña.
+    """
     try:
-        # Obtener JWKS de Cognito
-        jwks_url = f"{COGNITO_POOL_URL}/.well-known/jwks.json"
-        jwks = requests.get(jwks_url).json()
-
-        # Decodificar JWT
-        payload = jwt.decode(
-            token,
-            jwks,
-            algorithms=["RS256"],
-            audience=COGNITO_CLIENT_ID
+        resp = client.initiate_auth(
+            AuthFlow="USER_PASSWORD_AUTH",
+            AuthParameters={
+                "USERNAME": username,
+                "PASSWORD": password
+            },
+            ClientId=COGNITO_CLIENT_ID
         )
-        return payload
-    except Exception:
-        raise HTTPException(status_code=401, detail="Token inválido")
 
-def login(token: str):
-    # Validar token y devolver info del usuario
-    payload = verify_token(token)
-    return {
-        "status": "ok",
-        "id_cognito": payload.get("sub"),
-        "email": payload.get("email"),
-        "claims": payload
-    }
+        # Caso: Cognito exige cambio de contraseña
+        if resp.get("ChallengeName") == "NEW_PASSWORD_REQUIRED":
+            if not new_password:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Nueva contraseña requerida"
+                )
+            resp2 = client.respond_to_auth_challenge(
+                ClientId=COGNITO_CLIENT_ID,
+                ChallengeName="NEW_PASSWORD_REQUIRED",
+                Session=resp["Session"],
+                ChallengeResponses={
+                    "USERNAME": username,
+                    "NEW_PASSWORD": new_password
+                }
+            )
+            return resp2["AuthenticationResult"]
+
+        # Login normal
+        return resp["AuthenticationResult"]
+
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Error en login: {str(e)}")
+
 
 def logout():
-    # En Cognito el logout real se hace en frontend (revocar tokens).
-    # Aquí devolvemos un estado simple.
+    """
+    El logout real se hace en frontend (revocar tokens en Cognito).
+    Aquí devolvemos un estado simple.
+    """
     return {"status": "ok", "message": "Sesión cerrada"}
