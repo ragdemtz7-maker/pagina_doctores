@@ -4,10 +4,14 @@ from backend.persona.logic import crear_persona_si_no_existe
 
 def crear_paciente(data):
     try:
-        # 1) Crear/reciclar Persona
+        # 1) Crear Persona (o None si ya existe / no se pudo crear)
         id_persona = crear_persona_si_no_existe(data.dict())
 
-        # 2) Insertar Paciente con id_persona
+        # 2) Validar resultado
+        if not id_persona:
+            raise HTTPException(status_code=400, detail="La persona ya existe o no se pudo crear")
+
+        # 3) Insertar Paciente vinculado a esa persona
         conn = get_connection()
         with conn.cursor() as cursor:
             cursor.execute("""
@@ -15,9 +19,19 @@ def crear_paciente(data):
                 VALUES (%s, %s)
             """, (id_persona, data.fecha_nacimiento))
             conn.commit()
-            return {"status": "ok", "id_paciente": cursor.lastrowid, "id_persona": id_persona}
+
+            id_paciente = cursor.lastrowid if cursor.lastrowid else None
+
+            return {
+                "status": "ok",
+                "id_paciente": id_paciente,
+                "id_persona": id_persona
+            }
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 def listar_pacientes():
     try:
@@ -26,7 +40,8 @@ def listar_pacientes():
             cursor.execute("""
                 SELECT
                     pa.id_paciente, pa.fecha_nacimiento,
-                    p.id_persona, p.nombre, p.apellido, p.num_documento, p.correo, p.telefono, p.direccion
+                    p.id_persona, p.nombre, p.apellido, p.num_documento,
+                    p.correo, p.telefono, p.direccion
                 FROM Paciente pa
                 JOIN Persona p ON pa.id_persona = p.id_persona
             """)
@@ -35,14 +50,16 @@ def listar_pacientes():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-def obtener_paciente(id_paciente):
+
+def obtener_paciente(id_paciente: int):
     try:
         conn = get_connection()
         with conn.cursor() as cursor:
             cursor.execute("""
                 SELECT
                     pa.id_paciente, pa.fecha_nacimiento,
-                    p.id_persona, p.nombre, p.apellido, p.num_documento, p.correo, p.telefono, p.direccion
+                    p.id_persona, p.nombre, p.apellido, p.num_documento,
+                    p.correo, p.telefono, p.direccion
                 FROM Paciente pa
                 JOIN Persona p ON pa.id_persona = p.id_persona
                 WHERE pa.id_paciente = %s
@@ -54,7 +71,8 @@ def obtener_paciente(id_paciente):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-def actualizar_paciente(id_paciente, data):
+
+def actualizar_paciente(id_paciente: int, data):
     try:
         conn = get_connection()
         with conn.cursor() as cursor:
@@ -68,9 +86,13 @@ def actualizar_paciente(id_paciente, data):
             # Actualizar Persona
             cursor.execute("""
                 UPDATE Persona
-                SET nombre=%s, apellido=%s, num_documento=%s, correo=%s, telefono=%s, direccion=%s
+                SET nombre=%s, apellido=%s, num_documento=%s,
+                    correo=%s, telefono=%s, direccion=%s
                 WHERE id_persona=%s
-            """, (data.nombre, data.apellido, data.num_documento, data.correo, data.telefono, data.direccion, id_persona))
+            """, (
+                data.nombre, data.apellido, data.num_documento,
+                data.correo, data.telefono, data.direccion, id_persona
+            ))
 
             # Actualizar Paciente
             cursor.execute("""
@@ -84,7 +106,8 @@ def actualizar_paciente(id_paciente, data):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-def eliminar_paciente(id_paciente):
+
+def eliminar_paciente(id_paciente: int):
     try:
         conn = get_connection()
         with conn.cursor() as cursor:
