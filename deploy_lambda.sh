@@ -22,6 +22,19 @@ cd build
 zip -r9 ../lambda_package.zip .
 cd ..
 
-echo "✅ Paquete listo: lambda_package.zip"
+# 5. Mostrar cuadro final con detalles del archivo
+FILE="lambda_package.zip"
+SIZE=$(du -h "$FILE" | cut -f1)
+DATE=$(date +"%Y-%m-%d %H:%M:%S")
+
+echo ""
+echo "📊 Resumen del paquete generado"
+echo "-----------------------------------------"
+printf "📦 Nombre del archivo : %s\n" "$FILE"
+printf "⚖️  Peso del archivo   : %s\n" "$SIZE"
+printf "🕒 Fecha de creación   : %s\n" "$DATE"
+echo "-----------------------------------------"
+
+echo "✅ Paquete listo: $FILE"
 echo "👉 Sube este archivo manualmente a AWS Lambda y configura el handler como:"
 echo "   backend/app_swagger.handler"

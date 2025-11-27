@@ -3,12 +3,14 @@ pydantic==1.10.9
 mangum==0.17.0
 pymysql==1.1.0
 email-validator==1.3.1
-hypercorn==0.17.3
-httpcore==1.0.7
-httpx==0.27.0
-h11==0.14.0
 
-# 🔑 Añadidos para Cognito
-boto3==1.34.0        # SDK de AWS para crear usuarios en Cognito
-python-jose==3.3.0   # Para validar y decodificar JWT de Cognito
-requests==2.31.0     # Para obtener JWKS y validar firmas
+# 🔑 Cognito
+boto3==1.34.0        # SDK de AWS para Cognito
+python-jose==3.3.0   # Validar y decodificar JWT de Cognito
+requests==2.31.0     # Solo si mantienes verify_token con JWKS
+
+# 🖥️ Local dev / servidor (puedes comentar si no lo usas en producción)
+# hypercorn==0.17.3   # Servidor ASGI alternativo a Uvicorn
+# httpx==0.27.0       # Cliente HTTP (útil para pruebas o llamadas externas)
+# httpcore==1.0.7     # Dependencia interna de httpx
+# h11==0.14.0         # Dependencia interna de servidores ASGI
