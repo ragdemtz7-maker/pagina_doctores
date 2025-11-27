@@ -1,10 +1,23 @@
 from fastapi import HTTPException
-import boto3
+import boto3, hmac, hashlib, base64
 
 COGNITO_CLIENT_ID = "5eiror37ph4chhlm1a85sqk0cg"
+COGNITO_CLIENT_SECRET = "1udap3jq63b1kp721n4fsk9vg58apj6ipt0mf0acbu05j0428cfo"
 COGNITO_REGION = "us-east-2"
 
 client = boto3.client("cognito-idp", region_name=COGNITO_REGION)
+
+def get_secret_hash(username: str) -> str:
+    """
+    Calcula el SECRET_HASH requerido por Cognito cuando el App Client tiene secret.
+    """
+    message = username + COGNITO_CLIENT_ID
+    dig = hmac.new(
+        COGNITO_CLIENT_SECRET.encode("utf-8"),
+        msg=message.encode("utf-8"),
+        digestmod=hashlib.sha256
+    ).digest()
+    return base64.b64encode(dig).decode()
 
 def login_user(username: str, password: str, new_password: str = None):
     """
@@ -16,7 +29,8 @@ def login_user(username: str, password: str, new_password: str = None):
             AuthFlow="USER_PASSWORD_AUTH",
             AuthParameters={
                 "USERNAME": username,
-                "PASSWORD": password
+                "PASSWORD": password,
+                "SECRET_HASH": get_secret_hash(username)
             },
             ClientId=COGNITO_CLIENT_ID
         )
@@ -34,7 +48,8 @@ def login_user(username: str, password: str, new_password: str = None):
                 Session=resp["Session"],
                 ChallengeResponses={
                     "USERNAME": username,
-                    "NEW_PASSWORD": new_password
+                    "NEW_PASSWORD": new_password,
+                    "SECRET_HASH": get_secret_hash(username)
                 }
             )
             return resp2["AuthenticationResult"]
@@ -44,7 +59,6 @@ def login_user(username: str, password: str, new_password: str = None):
 
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"Error en login: {str(e)}")
-
 
 def logout():
     """
