@@ -8,7 +8,7 @@ from backend.cita_medica.logic import (
     eliminar_cita_medica,
 )
 
-router = APIRouter(prefix="/api/cita_medica", tags=["CitaMedica"])
+router = APIRouter(prefix="/cita_medica", tags=["CitaMedica"])
 
 @router.post("/", summary="Crear cita médica")
 def crear(data: CitaMedicaCreate):
@@ -25,21 +25,24 @@ def listar():
     return listar_citas_medicas()
 
 @router.get("/{id_cita}", summary="Obtener cita médica por ID")
-def obtener(id_cita: int = Path(...)):
+def obtener(id_cita: int = Path(..., description="ID de la cita médica")):
     """
     Obtener una cita médica específica por su ID.
     """
     return obtener_cita_medica(id_cita)
 
 @router.put("/{id_cita}", summary="Actualizar cita médica")
-def actualizar(id_cita: int, data: CitaMedicaUpdate):
+def actualizar(
+    id_cita: int = Path(..., description="ID de la cita médica"),
+    data: CitaMedicaUpdate = None
+):
     """
     Actualizar una cita médica (programación, paciente o estado).
     """
     return actualizar_cita_medica(id_cita, data)
 
 @router.delete("/{id_cita}", summary="Eliminar cita médica")
-def eliminar(id_cita: int = Path(...)):
+def eliminar(id_cita: int = Path(..., description="ID de la cita médica")):
     """
     Eliminar una cita médica por su ID.
     """
