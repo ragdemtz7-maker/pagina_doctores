@@ -1,5 +1,5 @@
-# Lógica CRUD para Programacion
 from backend.bd import get_connection
+from fastapi import HTTPException
 
 def crear_programacion(data: dict) -> dict:
     """
@@ -23,12 +23,12 @@ def crear_programacion(data: dict) -> dict:
             conn.commit()
             return {"status": "ok", "id_programacion": cursor.lastrowid}
     except Exception as e:
-        return {"status": "error", "error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
 
 
-def listar_programaciones() -> list | dict:
+def listar_programaciones() -> list:
     """
     Lista todas las programaciones ordenadas por fecha y hora.
     """
@@ -37,12 +37,9 @@ def listar_programaciones() -> list | dict:
         with conn.cursor() as cursor:
             cursor.execute("SELECT * FROM Programacion ORDER BY fecha, hora_inicio")
             rows = cursor.fetchall()
-            programaciones = [
-                dict(zip([d[0] for d in cursor.description], r)) for r in rows
-            ]
-            return programaciones
+            return [dict(zip([d[0] for d in cursor.description], r)) for r in rows]
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
 
@@ -70,7 +67,7 @@ def actualizar_programacion(id_programacion: int, data: dict) -> dict:
             conn.commit()
             return {"status": "ok"}
     except Exception as e:
-        return {"status": "error", "error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
 
@@ -89,6 +86,6 @@ def eliminar_programacion(id_programacion: int) -> dict:
             conn.commit()
             return {"status": "ok"}
     except Exception as e:
-        return {"status": "error", "error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
