@@ -8,7 +8,7 @@ from backend.programacion.logic import (
     eliminar_programacion,
 )
 
-router = APIRouter(prefix="/api/programacion", tags=["Programacion"])
+router = APIRouter(prefix="/programacion", tags=["Programacion"])
 
 @router.post("/crear", summary="Crear programación")
 def api_crear_programacion(data: ProgramacionCreate):

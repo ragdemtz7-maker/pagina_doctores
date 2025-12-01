@@ -22,18 +22,20 @@ def crear_cita_medica(data):
 
 def listar_citas_medicas():
     """
-    Lista todas las citas médicas con datos de programación y paciente.
+    Lista todas las citas médicas con datos de programación y paciente (nombre y apellido desde Persona).
     """
     try:
         conn = get_connection()
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT c.id_cita, c.id_programacion, c.id_paciente, c.estado,
-                       p.fecha, p.hora_inicio, p.hora_fin,
-                       pa.nombre AS paciente_nombre, pa.apellido AS paciente_apellido
+                SELECT
+                    c.id_cita, c.id_programacion, c.id_paciente, c.estado,
+                    p.fecha, p.hora_inicio, p.hora_fin,
+                    per.nombre AS paciente_nombre, per.apellido AS paciente_apellido
                 FROM CitaMedica c
                 JOIN Programacion p ON c.id_programacion = p.id_programacion
                 JOIN Paciente pa ON c.id_paciente = pa.id_paciente
+                JOIN Persona per ON pa.id_persona = per.id_persona
                 ORDER BY p.fecha, p.hora_inicio
             """)
             rows = cursor.fetchall()
@@ -46,25 +48,26 @@ def listar_citas_medicas():
 
 def obtener_cita_medica(id_cita: int):
     """
-    Obtiene una cita médica por su ID.
+    Obtiene una cita médica por su ID con datos de programación y paciente (nombre y apellido desde Persona).
     """
     try:
         conn = get_connection()
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT c.id_cita, c.id_programacion, c.id_paciente, c.estado,
-                       p.fecha, p.hora_inicio, p.hora_fin,
-                       pa.nombre AS paciente_nombre, pa.apellido AS paciente_apellido
+                SELECT
+                    c.id_cita, c.id_programacion, c.id_paciente, c.estado,
+                    p.fecha, p.hora_inicio, p.hora_fin,
+                    per.nombre AS paciente_nombre, per.apellido AS paciente_apellido
                 FROM CitaMedica c
                 JOIN Programacion p ON c.id_programacion = p.id_programacion
                 JOIN Paciente pa ON c.id_paciente = pa.id_paciente
+                JOIN Persona per ON pa.id_persona = per.id_persona
                 WHERE c.id_cita = %s
             """, (id_cita,))
             row = cursor.fetchone()
             if row:
                 return dict(zip([d[0] for d in cursor.description], row))
-            else:
-                raise HTTPException(status_code=404, detail="Cita médica no encontrada")
+            raise HTTPException(status_code=404, detail="Cita médica no encontrada")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
@@ -80,8 +83,8 @@ def actualizar_cita_medica(id_cita: int, data):
         with conn.cursor() as cursor:
             cursor.execute("""
                 UPDATE CitaMedica
-                SET id_programacion=%s, id_paciente=%s, estado=%s
-                WHERE id_cita=%s
+                SET id_programacion = %s, id_paciente = %s, estado = %s
+                WHERE id_cita = %s
             """, (data.id_programacion, data.id_paciente, data.estado, id_cita))
             conn.commit()
             return {"status": "ok"}
@@ -98,7 +101,7 @@ def eliminar_cita_medica(id_cita: int):
     try:
         conn = get_connection()
         with conn.cursor() as cursor:
-            cursor.execute("DELETE FROM CitaMedica WHERE id_cita=%s", (id_cita,))
+            cursor.execute("DELETE FROM CitaMedica WHERE id_cita = %s", (id_cita,))
             conn.commit()
             return {"status": "ok"}
     except Exception as e:
