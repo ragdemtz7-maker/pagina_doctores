@@ -33,8 +33,8 @@ def obtener(id_cita: int = Path(..., description="ID de la cita médica")):
 
 @router.put("/{id_cita}", summary="Actualizar cita médica")
 def actualizar(
-    id_cita: int = Path(..., description="ID de la cita médica"),
-    data: CitaMedicaUpdate = None
+    data: CitaMedicaUpdate,
+    id_cita: int = Path(..., description="ID de la cita médica")
 ):
     """
     Actualizar una cita médica (programación, paciente o estado).
