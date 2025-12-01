@@ -9,6 +9,7 @@ from backend.cita_medica.routes import router as cita_medica_router
 from backend.persona.routes import router as persona_router
 from backend.programacion.routes import router as programacion_router
 from backend.auth.routes import router as auth_router
+from backend.especialidad.routes import router as especialidad_router  # 🆕 Nuevo módulo
 
 app = FastAPI(
     title="API Citas Médicas",
@@ -32,7 +33,8 @@ app.include_router(medico_router, prefix="/api", tags=["Medico"])
 app.include_router(cita_medica_router, prefix="/api", tags=["CitaMedica"])
 app.include_router(persona_router, prefix="/api", tags=["Persona"])
 app.include_router(programacion_router, prefix="/api", tags=["Programacion"])
-app.include_router(auth_router) 
+app.include_router(auth_router)
+app.include_router(especialidad_router, prefix="/api", tags=["Especialidad"])
 
 @app.get("/")
 def home():
