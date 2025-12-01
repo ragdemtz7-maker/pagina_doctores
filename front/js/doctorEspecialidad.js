@@ -1,14 +1,13 @@
-<script>
   const doctorEspecialidadMap = {
-    "Patricia Conde": "Pediatría",
-    "Martha Zamora": "Ginecología",
-    "Manuel Lara": "Cardiología",
-    "Eduardo Pérez": "Gastroenterología",
-    "Joaquín Oropeza": "Médico General"
+    "Pediatría": "Patricia Conde",
+    "Ginecología": "Martha Zamora",
+    "Cardiología": "Manuel Lara",
+    "Gastroenterología": "Eduardo Pérez",
+    "Médico General": "Joaquín Oropeza"
   };
 
-  const especialidadDoctorMap = Object.entries(doctorEspecialidadMap).reduce((acc, [doctor, especialidad]) => {
-    acc[especialidad] = doctor;
+  const especialidadDoctorMap = Object.entries(doctorEspecialidadMap).reduce((acc, [especialidad, doctor]) => {
+    acc[doctor] = especialidad;
     return acc;
   }, {});
-</script>
+

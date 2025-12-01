@@ -1,4 +1,3 @@
-<script>
   const doctorSelect = document.getElementById("doctorSelect");
   const especialidadSelect = document.getElementById("especialidadSelect");
 
@@ -13,4 +12,4 @@
     const doctor = especialidadDoctorMap[selectedEspecialidad] || "";
     doctorSelect.value = doctor;
   });
-</script>
+
