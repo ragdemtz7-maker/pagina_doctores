@@ -6,4 +6,4 @@ class EspecialidadCreate(BaseModel):
 
 class MedicoEspecialidadCreate(BaseModel):
     id_medico: int
-    especialidad: str
+    id_especialidad: int 
