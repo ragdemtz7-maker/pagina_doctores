@@ -20,8 +20,8 @@ def asignar_especialidad_a_medico(data):
         conn = get_connection()
         with conn.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO Medico_Especialidad (id_medico, especialidad) VALUES (%s, %s)",
-                (data.id_medico, data.especialidad)
+                "INSERT INTO Medico_Especialidad (id_medico, id_especialidad) VALUES (%s, %s)",
+                (data.id_medico, data.id_especialidad)   # ✅ ahora usamos id_especialidad
             )
         conn.commit()
         return {"status": "ok", "message": "Especialidad asignada al médico"}
@@ -61,7 +61,7 @@ def obtener_especialidades_por_medico(id_medico: int):
                 """
                 SELECT e.id_especialidad, e.especialidad
                 FROM Medico_Especialidad me
-                JOIN Especialidades e ON me.especialidad = e.especialidad
+                JOIN Especialidades e ON me.id_especialidad = e.id_especialidad   -- ✅ join por id
                 WHERE me.id_medico = %s
                 """,
                 (id_medico,)
