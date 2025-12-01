@@ -1,6 +1,6 @@
 import pymysql
 from fastapi import HTTPException
-from backend.db import get_connection  # Asumiendo que tienes esta función
+from backend.bd import get_connection  # Asumiendo que tienes esta función
 
 def agregar_especialidad(data):
     try:
