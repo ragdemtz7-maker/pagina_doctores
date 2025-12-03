@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const openLogin = document.getElementById("openLoginModal");
   const openRegister = document.getElementById("openRegisterModal");
   const closeButtons = document.querySelectorAll(".close-button");
-  const logoutBtn = document.getElementById("logoutBtn"); // <li id="logoutBtn">
+  const logoutBtn = document.getElementById("logoutBtn");
 
   // Abrir modales
   openLogin?.addEventListener("click", () => (loginModal.style.display = "block"));
@@ -30,18 +30,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Mostrar/ocultar login, registro y logout según sesión
   const token = localStorage.getItem("userPatient");
   if (token) {
-    // Ocultar login y registro
     if (openLogin) openLogin.style.display = "none";
     if (openRegister) openRegister.style.display = "none";
-    // Mostrar logout
     if (logoutBtn) logoutBtn.style.display = "block";
 
     logoutBtn?.addEventListener("click", () => {
       localStorage.clear();
-      window.location.href = "index.html"; // redirige al home
+      window.location.href = "index.html";
     });
   } else {
-    // Usuario no logueado
     if (openLogin) openLogin.style.display = "block";
     if (openRegister) openRegister.style.display = "block";
     if (logoutBtn) logoutBtn.style.display = "none";
@@ -55,12 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("loginPassword").value;
 
     if (!email || password.length < 8) {
-      alert("Error en crdenciales, revisa usuario y contraseña");
+      alert("Error en credenciales, revisa usuario y contraseña");
       return;
     }
 
     try {
-      // Buscar paciente
+      // Buscar paciente por correo
       const pacientesRes = await fetch("https://1w19wlsa1d.execute-api.us-east-2.amazonaws.com/prod/api/paciente");
       if (!pacientesRes.ok) throw new Error(`HTTP ${pacientesRes.status}`);
       const pacientes = await pacientesRes.json();
@@ -70,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Buscar usuario
+      // Buscar usuario por correo
       const usuariosRes = await fetch("https://1w19wlsa1d.execute-api.us-east-2.amazonaws.com/prod/api/usuario");
       if (!usuariosRes.ok) throw new Error(`HTTP ${usuariosRes.status}`);
       const usuarios = await usuariosRes.json();
@@ -80,7 +77,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Validar id_cognito (UUID)
+      // Validar vínculo por id_persona
+      if (usuario.id_persona !== paciente.id_persona) {
+        alert("El usuario y paciente no están vinculados correctamente");
+        return;
+      }
+
+      // Validar rol y cognito
+      if (usuario.rol !== "paciente") {
+        alert("El usuario no tiene rol de paciente");
+        return;
+      }
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       if (!uuidRegex.test(usuario.id_cognito)) {
         alert("id_cognito inválido");

@@ -1,11 +1,14 @@
-
 document.addEventListener("DOMContentLoaded", async () => {
   const tablaCitas = document.getElementById("tablaCitas");
 
   // Utilidad: convertir segundos a HH:MM
   function segundosAHora(segundos) {
-    const h = Math.floor(segundos / 3600).toString().padStart(2, "0");
-    const m = Math.floor((segundos % 3600) / 60).toString().padStart(2, "0");
+    const h = Math.floor(segundos / 3600)
+      .toString()
+      .padStart(2, "0");
+    const m = Math.floor((segundos % 3600) / 60)
+      .toString()
+      .padStart(2, "0");
     return `${h}:${m}`;
   }
 
@@ -31,7 +34,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   const userData = decodeJWT(token);
   if (!userData || !userData.id_paciente) {
-    tablaCitas.innerHTML = "<tr><td colspan='7'>JWT inválido o sin id_paciente</td></tr>";
+    tablaCitas.innerHTML =
+      "<tr><td colspan='7'>JWT inválido o sin id_paciente</td></tr>";
     return;
   }
 
@@ -39,23 +43,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("Paciente autenticado:", idPaciente);
 
   try {
-    const resp = await fetch("https://1w19wlsa1d.execute-api.us-east-2.amazonaws.com/prod/api/cita_medica/");
+    const resp = await fetch(
+      "https://1w19wlsa1d.execute-api.us-east-2.amazonaws.com/prod/api/cita_medica/"
+    );
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const citas = await resp.json();
     console.log("Citas recibidas:", citas);
 
     // Filtrar por paciente
-    const citasPaciente = citas.filter(c => c.id_paciente === idPaciente);
+    const citasPaciente = citas.filter((c) => c.id_paciente === idPaciente);
 
     if (citasPaciente.length === 0) {
-      tablaCitas.innerHTML = "<tr><td colspan='7'>No hay citas para este paciente</td></tr>";
+      tablaCitas.innerHTML =
+        "<tr><td colspan='7'>No hay citas para este paciente</td></tr>";
       return;
     }
 
     // Llenar tabla
     tablaCitas.innerHTML = "";
-    citasPaciente.forEach(c => {
+    citasPaciente.forEach((c) => {
       const fila = document.createElement("tr");
+      // 👇 aquí añadimos el atributo data-idcita
+      fila.setAttribute("data-idcita", c.id_cita);
+
       fila.innerHTML = `
         <td>${c.id_cita}</td>
         <td>${c.fecha}</td>
@@ -69,6 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   } catch (err) {
     console.error("Error cargando citas", err);
-    tablaCitas.innerHTML = "<tr><td colspan='7'>Error al cargar citas</td></tr>";
+    tablaCitas.innerHTML =
+      "<tr><td colspan='7'>Error al cargar citas</td></tr>";
   }
 });
